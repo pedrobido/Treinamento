@@ -33,8 +33,12 @@ public class Locadora {
 				buscaModelo(modelo);
 				break;
 			case "2":
-				int velocidadeMaxima = Integer.parseInt(JOptionPane.showInputDialog("Digite o modelo do carro:"));
-				buscaVelocidadeMaxima(velocidadeMaxima);
+				try {
+					int velocidadeMaxima = Integer.parseInt(JOptionPane.showInputDialog("Digite o modelo do carro:"));
+					buscaVelocidadeMaxima(velocidadeMaxima);
+				} catch (NumberFormatException e) {
+					JOptionPane.showMessageDialog(null, "Carro não encontrado");
+				}
 				break;
 			case "3":
 				String combustivel = JOptionPane.showInputDialog("Digite o combustivel do carro:").toUpperCase();
@@ -67,17 +71,27 @@ public class Locadora {
 
 	public void addCarro() {
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (verificaNull(i)) {
-				String modelo = JOptionPane.showInputDialog("Digite o modelo do carro a ser adicionado: ");
-				String placa = JOptionPane.showInputDialog("Digite a placa do carro a ser adicionado: ");
-				int velocidadeMaxima = Integer.parseInt(
-						JOptionPane.showInputDialog("Digite a velocidade máxima do carro a ser adicionado: "));
-				String combustivel = JOptionPane.showInputDialog("Digite o combustivel do carro a ser adicionado: ");
-				double valor = Double
-						.parseDouble(JOptionPane.showInputDialog("Digite o preço do carro a ser adicionado: "));
-				String cor = JOptionPane.showInputDialog("Digite a cor do carro a ser adicionado: ");
-				vetorCarro[i] = new Carro(modelo, placa, velocidadeMaxima, combustivel, valor, cor, false);
+			if (vetorCarro[i] != null) {
+				try {
+					String modelo = JOptionPane.showInputDialog("Digite o modelo do carro a ser adicionado: ")
+							.toUpperCase();
+					String placa = JOptionPane.showInputDialog("Digite a placa do carro a ser adicionado: ")
+							.toUpperCase();
+					int velocidadeMaxima = Integer.parseInt(
+							JOptionPane.showInputDialog("Digite a velocidade máxima do carro a ser adicionado: "));
+					String combustivel = JOptionPane.showInputDialog("Digite o combustivel do carro a ser adicionado: ")
+							.toUpperCase();
+					double valor = Double
+							.parseDouble(JOptionPane.showInputDialog("Digite o preço do carro a ser adicionado: "));
+					String cor = JOptionPane.showInputDialog("Digite a cor do carro a ser adicionado: ").toUpperCase();
+					vetorCarro[i] = new Carro(modelo, placa, velocidadeMaxima, combustivel, valor, cor, false);
+				} catch (NumberFormatException e) {
+					JOptionPane.showMessageDialog(null, "Opção invalida");
+					break;
+				}
 				break;
+			} else {
+				JOptionPane.showMessageDialog(null, "Não há mais espaço para adicionar carros");
 			}
 
 		}
@@ -90,15 +104,17 @@ public class Locadora {
 		ordenarVetorCrescente();
 		int j = 0;
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (vetorCarro[i].modelo.equals(modeloVenda) && vetorCarro[i].cor.equals(corVenda)
-					&& (vetorCarro[i].vendido == false)) {
-				carroAux[j] = vetorCarro[i];
-				j++;
-				listaCarro = listaCarro + "\n\n(" + j + ")-\nModelo: " + vetorCarro[i].modelo + "\nPlaca: "
-						+ vetorCarro[i].placa + "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima
-						+ "\nCombustivel: " + vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: "
-						+ vetorCarro[i].cor + "\n";
-				existeCarro = true;
+			if (vetorCarro[i] != null) {
+				if (vetorCarro[i].modelo.equals(modeloVenda) && vetorCarro[i].cor.equals(corVenda)
+						&& (vetorCarro[i].vendido == false)) {
+					carroAux[j] = vetorCarro[i];
+					j++;
+					listaCarro = listaCarro + "\n\n(" + j + ")-\nModelo: " + vetorCarro[i].modelo + "\nPlaca: "
+							+ vetorCarro[i].placa + "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima
+							+ "\nCombustivel: " + vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor
+							+ "\nCor: " + vetorCarro[i].cor + "\n";
+					existeCarro = true;
+				}
 			}
 		}
 		if (existeCarro == false) {
@@ -114,6 +130,7 @@ public class Locadora {
 					}
 				}
 			} else {
+				j--;
 				comprarCarro(carroAux[j].valor, j);
 			}
 		}
@@ -141,8 +158,10 @@ public class Locadora {
 
 	public void confirmarVenda(int posicao) {
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (vetorCarro[i].placa == carroAux[posicao].placa) {
-				vetorCarro[i].vendido = true;
+			if (vetorCarro[i] != null) {
+				if (vetorCarro[i].placa == carroAux[posicao].placa) {
+					vetorCarro[i].vendido = true;
+				}
 			}
 		}
 
@@ -194,14 +213,16 @@ public class Locadora {
 		String listaCarro = "";
 		boolean existeCarro = false;
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (vetorCarro[i].modelo.equals(modelo) && (vetorCarro[i].vendido == false)) {
-				listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
-						+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
-						+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: " + vetorCarro[i].cor
-						+ "\n";
-				existeCarro = true;
-			}
+			if (vetorCarro[i] != null) {
+				if (vetorCarro[i].modelo.equals(modelo) && (vetorCarro[i].vendido == false)) {
+					listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
+							+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
+							+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: "
+							+ vetorCarro[i].cor + "\n";
+					existeCarro = true;
+				}
 
+			}
 		}
 		if (existeCarro == false) {
 			JOptionPane.showMessageDialog(null, "Carro não encontrado.");
@@ -215,12 +236,14 @@ public class Locadora {
 		String listaCarro = "";
 		boolean existeCarro = false;
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (vetorCarro[i].velocidadeMaxima == (velocidadeMaxima) && (vetorCarro[i].vendido == false)) {
-				listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
-						+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
-						+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: " + vetorCarro[i].cor
-						+ "\n";
-				existeCarro = true;
+			if (vetorCarro[i] != null) {
+				if (vetorCarro[i].velocidadeMaxima == (velocidadeMaxima) && (vetorCarro[i].vendido == false)) {
+					listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
+							+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
+							+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: "
+							+ vetorCarro[i].cor + "\n";
+					existeCarro = true;
+				}
 			}
 		}
 		if (existeCarro == false) {
@@ -234,12 +257,14 @@ public class Locadora {
 		String listaCarro = "";
 		boolean existeCarro = false;
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (vetorCarro[i].combustivel.equals(combustivel) && (vetorCarro[i].vendido == false)) {
-				listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
-						+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
-						+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: " + vetorCarro[i].cor
-						+ "\n";
-				existeCarro = true;
+			if (vetorCarro[i] != null) {
+				if (vetorCarro[i].combustivel.equals(combustivel) && (vetorCarro[i].vendido == false)) {
+					listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
+							+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
+							+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: "
+							+ vetorCarro[i].cor + "\n";
+					existeCarro = true;
+				}
 			}
 		}
 		if (existeCarro == false) {
@@ -252,12 +277,14 @@ public class Locadora {
 	public void ordenarVetorDecrescente() {
 		Carro aux;
 		for (int i = 0; i < vetorCarro.length; i++) {
-			for (int j = 0; j < vetorCarro.length; j++) {
-				if (!verificaNull(i)) {
-					if (vetorCarro[i].valor > vetorCarro[j].valor) {
-						aux = vetorCarro[i];
-						vetorCarro[i] = vetorCarro[j];
-						vetorCarro[j] = aux;
+			if (vetorCarro[i] != null) {
+				for (int j = 0; j < vetorCarro.length; j++) {
+					if (vetorCarro[j] != null) {
+						if (vetorCarro[i].valor > vetorCarro[j].valor) {
+							aux = vetorCarro[i];
+							vetorCarro[i] = vetorCarro[j];
+							vetorCarro[j] = aux;
+						}
 					}
 				}
 			}
@@ -267,12 +294,14 @@ public class Locadora {
 	public void ordenarVetorCrescente() {
 		Carro aux;
 		for (int i = 0; i < vetorCarro.length; i++) {
-			for (int j = 0; j < vetorCarro.length; j++) {
-				if (!verificaNull(i)) {
-					if (vetorCarro[i].valor < vetorCarro[j].valor) {
-						aux = vetorCarro[i];
-						vetorCarro[i] = vetorCarro[j];
-						vetorCarro[j] = aux;
+			if (vetorCarro[i] != null) {
+				for (int j = 0; j < vetorCarro.length; j++) {
+					if (vetorCarro[j] != null) {
+						if (vetorCarro[i].valor < vetorCarro[j].valor) {
+							aux = vetorCarro[i];
+							vetorCarro[i] = vetorCarro[j];
+							vetorCarro[j] = aux;
+						}
 					}
 				}
 			}
@@ -283,7 +312,7 @@ public class Locadora {
 		String listaCarro = "";
 		ordenarVetorDecrescente();
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (!verificaNull(i)) {
+			if (vetorCarro[i] != null) {
 				if (vetorCarro[i].vendido == false) {
 					listaCarro = listaCarro + "Modelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
 							+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
@@ -299,11 +328,13 @@ public class Locadora {
 		String listaCarro = "";
 		ordenarVetorCrescente();
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (vetorCarro[i].vendido == false) {
-				listaCarro = listaCarro + "Modelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
-						+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
-						+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: " + vetorCarro[i].cor
-						+ "\n\n";
+			if (vetorCarro[i] != null) {
+				if (vetorCarro[i].vendido == false) {
+					listaCarro = listaCarro + "Modelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
+							+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
+							+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: "
+							+ vetorCarro[i].cor + "\n\n";
+				}
 			}
 		}
 		return listaCarro;
@@ -313,14 +344,15 @@ public class Locadora {
 		String listaCarro = "";
 		boolean existeCarro = false;
 		for (int i = 0; i < vetorCarro.length; i++) {
-			if (vetorCarro[i].cor.equals(cor) && (vetorCarro[i].vendido == false)) {
-				listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
-						+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
-						+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: " + vetorCarro[i].cor
-						+ "\n";
-				existeCarro = true;
+			if (vetorCarro[i] != null) {
+				if (vetorCarro[i].cor.equals(cor) && (vetorCarro[i].vendido == false)) {
+					listaCarro = listaCarro + "\nModelo: " + vetorCarro[i].modelo + "\nPlaca: " + vetorCarro[i].placa
+							+ "\nVelocidade máxima: " + vetorCarro[i].velocidadeMaxima + "\nCombustivel: "
+							+ vetorCarro[i].combustivel + "\nValor: " + vetorCarro[i].valor + "\nCor: "
+							+ vetorCarro[i].cor + "\n";
+					existeCarro = true;
+				}
 			}
-
 		}
 		if (existeCarro == false) {
 			JOptionPane.showMessageDialog(null, "Carro não encontrado.");
@@ -330,11 +362,4 @@ public class Locadora {
 
 	}
 
-	public boolean verificaNull(int indice) {
-		boolean vazio = false;
-		if (vetorCarro[indice] == null) {
-			vazio = true;
-		}
-		return vazio;
-	}
 }
